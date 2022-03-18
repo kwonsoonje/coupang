@@ -14,20 +14,107 @@ from selenium import webdriver
 import time
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+import random
 
 class Thread(QtCore.QThread):
     def run(self):
         options = webdriver.ChromeOptions()
         options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
         self.driver = webdriver.Chrome(options=options)
-        self.driver.get('https://login.coupang.com/login/login.pang?')
-        self.driver.set_window_size(1920, 1080)
+        self.driver.get('https://partners.coupang.com/')
+        self.driver.set_window_size(1300, 1000)
+        self.driver.implicitly_wait(10)
+        self.driver.find_element_by_xpath('//*[@id="app-header"]/div[2]/div/button[1]').click()
+        self.driver.implicitly_wait(10)
         self.driver.find_element_by_xpath('//*[@id="login-email-input"]').send_keys(self.naruto.coupang_id)
         time.sleep(1)
         self.driver.find_element_by_xpath('//*[@id="login-password-input"]').send_keys(self.naruto.coupang_pw)
         time.sleep(2)
-        #self.driver.find_element_by_xpath('/html/body/div[1]/div/div/form/div[5]/button').click()
-        
+        self.driver.find_element_by_xpath('//*[@id="login-keep-state"]').click()
+        self.driver.find_element_by_xpath('/html/body/div[1]/div/div/form/div[5]/button').click()
+        time.sleep(5)
+
+        user_option1 = list()
+        user_option2 = list()
+        user_option3 = list()
+        if self.naruto.radioButton.isChecked():
+            if self.naruto.checkBox_3.isChecked():
+                user_option1.append("패션의류")
+
+            if self.naruto.checkBox_4.isChecked():
+                user_option1.append("패션잡화")
+
+            if self.naruto.checkBox_5.isChecked():
+                user_option1.append("화장품/미용")
+
+            if self.naruto.checkBox_6.isChecked():
+                user_option1.append("디지털/가전")
+
+            if self.naruto.checkBox_9.isChecked():
+                user_option1.append("출산/육아")
+
+            if self.naruto.checkBox_8.isChecked():
+                user_option1.append("식품")
+
+            if self.naruto.checkBox_7.isChecked():
+                user_option1.append("스포츠/레저")
+
+            if self.naruto.checkBox_10.isChecked():
+                user_option1.append("역사/생활편의")
+
+            if self.naruto.checkBox_11.isChecked():
+                user_option1.append("면세점")
+
+            if self.naruto.checkBox_12.isChecked():
+                user_option1.append("도서")
+
+            if self.naruto.checkBox_13.isChecked():
+                user_option1.append("랜덤")
+
+
+            target = self.get_product_target(user_option1, 5)
+            for blog in self.naruto.blog_memory:
+                if blog[0].isChecked():
+                    update_counter = 0
+                    if self.naruto.product_counter1 == self.naruto.product_counter2 :
+                        update_counter = self.naruto.product_counter1
+                    else:
+                        update_counter = random.randrange(self.naruto.product_counter1, (self.naruto.product_counter2+1))
+
+                    print(target)
+                    print(update_counter)
+                    answer = random.sample(target, update_counter)
+                    print(answer)
+                    self.driver.get('https://partners.coupang.com/#affiliate/ws/link')
+                    self.driver.implicitly_wait(10)
+                    for search_text in answer:
+                        self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div[2]/div/div/div[1]/div/div/div[2]/div/div/div/div/div/div/section[3]/div/span/input').send_keys(search_text)
+                        time.sleep(1)
+                        self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div[2]/div/div/div[1]/div/div/div[2]/div/div/div/div/div/div/section[3]/div/span/span[2]/button').click()
+                        y_select = random.randrange(1, 8)
+
+
+
+    def get_product_target(self, user_option, get_counter):
+        self.driver.get('https://datalab.naver.com/')
+        self.driver.implicitly_wait(10)
+        product_search_name = list()
+        for cate in user_option:
+            self.driver.find_element_by_xpath('//*[@id="content"]/div[1]/div[3]/div[1]/a').click()
+            time.sleep(1)
+            for y in range(1,13):
+                cate_name = self.driver.find_element_by_xpath('//*[@id="content"]/div[1]/div[3]/div[1]/ul/li['+str(y)+']').text
+                if cate_name == cate :
+                    self.driver.find_element_by_xpath('//*[@id="content"]/div[1]/div[3]/div[1]/ul/li['+str(y)+']').click()
+                    time.sleep(1)
+                    break
+
+            for y in range(1,11):
+                search_name2 = self.driver.find_element_by_xpath('//*[@id="content"]/div[1]/div[4]/div/div[1]/div/div/div[12]/div/div/ul/li['+str(y)+']/a/span').text
+                product_search_name.append(search_name2)
+
+        return product_search_name
+
 
     def stop(self):
         self.driver.quit()
@@ -420,14 +507,14 @@ class Ui_MainWindow(QWidget):
 "background-color: rgb(0, 170, 255);")
         self.pushButton_12.setObjectName("pushButton_12")
         self.label_9 = QtWidgets.QLabel(self.tab_2)
-        self.label_9.setGeometry(QtCore.QRect(550, 330, 331, 161))
+        self.label_9.setGeometry(QtCore.QRect(500, 330, 331, 161))
         self.label_9.setText("")
-        self.label_9.setPixmap(QtGui.QPixmap("2222.PNG"))
+        self.label_9.setPixmap(QtGui.QPixmap("aa1.PNG"))
         self.label_9.setObjectName("label_9")
         self.label_8 = QtWidgets.QLabel(self.tab_2)
-        self.label_8.setGeometry(QtCore.QRect(110, 330, 301, 161))
+        self.label_8.setGeometry(QtCore.QRect(40, 330, 301, 161))
         self.label_8.setText("")
-        self.label_8.setPixmap(QtGui.QPixmap("3333.PNG"))
+        self.label_8.setPixmap(QtGui.QPixmap("aa2.PNG"))
         self.label_8.setObjectName("label_8")
         self.checkBox_19 = QtWidgets.QCheckBox(self.tab_2)
         self.checkBox_19.setGeometry(QtCore.QRect(30, 380, 71, 41))
